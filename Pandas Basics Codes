@@ -1,6 +1,5 @@
 =====================================================
 1. How to access jupyter notebook
-
 ---------------------------------------------
 i.  Type jupyter notebook in command prompt
 ii. open displayed html notepad in google chrome.
@@ -24,7 +23,6 @@ Avg| Temp|	month| windSpeed
 
 =====================================================
 3. How to create DataFrame using dictionary
-
 ---------------------------------------------
 
 Create DataFrame using dictionary
@@ -38,7 +36,6 @@ df2
 
 =====================================================
 4. Achieve following operation on DataFrame df
-
 a) print all columns
 df.columns
 
