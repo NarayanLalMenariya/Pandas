@@ -90,7 +90,107 @@ output:
 1	30	    May	  123
 2	34	    June	90
 
------------------------------------------
+========================================================
+5. Replace all 123 from complete file with NaN (This method is usefully when from 
+any file if u have to replace not avalable with NaN, -1 with NaN etc)
+
+# Replace 123 with NaN
+df6 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv",na_values=[123])
+df6
+
+
+AvgTemp|	Month	 |WindSpeed
+0	29	   |April	 |109.0
+1	30	   |May	   |NaN
+2	34	   |June	  |90.0
+3	27	   |July	  |120.0
+4	26	   |August	|NaN
+-----------------------------------------------------
+6. use dictionay when u want to replace any perticular value from perticular column only
+for example 
+Replace 123 from WindSpeed , 30 from avgTemp , April from Month with NaN
+
+df7 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv",na_values=
+                 {'AvgTemp':[30],
+                  'Month':["April"],
+                  'WindSpeed':[123]
+                 })
+df7
+
+	AvgTemp	Month	 WindSpeed
+0	29.0	  NaN	   109.0
+1	NaN	   May	   NaN
+2	34.0	  June	  90.0
+3	27.0	  July	  120.0
+4	26.0	  August	NaN
+
+==========================================================
+7. Write df7 to New CSV file--> It will insert Index 0,1,2,3,4 also to csv file
+
+df7.to_csv("C:\Users\Sairampc\Desktop\DF7File.csv")
+----------------------------------------------------------
+8. Write df7 to CSV file by excluding index 
+
+df7.to_csv("C:\Users\Sairampc\Desktop\DF7FileWithoutIndex.csv", index=False)
+----------------------------------------------------------
+9. Write only AvgTemp & Month Column to CSV file
+
+df7.to_csv("C:\Users\Sairampc\Desktop\DF7FileOnlyAvgTmpNdMonth.csv", index=False,columns=["AvgTemp","Month"])
+----------------------------------------------------------
+10. Write to CSV without header
+df7.to_csv("C:\Users\Sairampc\Desktop\DF7FileWithoutHeader.csv", header=False)
+============================================================
+
+*********************** Working with Excel Sheet ***********************
+Install openpyxl:
+-----------------
+pip install openpyxl for Python 2
+pip3 install openpyxl for Python 3
+
+----------------------------------------------------
+10. Use converters to Replace cell data of windSpeed
+----------------------------------------------------
+df8 = pd.read_excel("C:\Users\Sairampc\Desktop\PandasXlSheet.xlsx","Sheet1")
+df8
+
+def convert_windSpeed_cell(cell):
+    if cell >= 120:
+        return "HighSpeed"
+    else:
+        return "NormalSpeed"
+    
+df9 = pd.read_excel("C:\Users\Sairampc\Desktop\PandasXlSheet.xlsx","Sheet1", converters={
+    'windSpeed':convert_windSpeed_cell
+    })
+df9
+
+output:
+
+
+Avg Temp	month	windSpeed
+0	29	   April	 NormalSpeed
+1	30	   may	   HighSpeed
+2	34	   June	  NormalSpeed
+3	27	   July	  HighSpeed
+4	26	   aug	   HighSpeed
+==============================================================
+11. Write df9 to New Excel sheet 
+
+df9.to_excel("C:\Users\Sairampc\Desktop\NewExel.xlsx", sheet_name="Sheet1")
+--------------------------------------------------------------
+12. Write without index & in excel sheet should start writing from row=1, column=2
+
+df9.to_excel("C:\Users\Sairampc\Desktop\NewXlWithoutIndex.xlsx", sheet_name="Sheet1", 
+             index=False,startrow=1,startcol=2)
+# Use columns=["month","windSpeed"] if u want to write these two columns only
+
+---------------------------------------------------------------
+13. Write df8 & df9 DataFrame to new Excel Sheet in two different sheets:
+# Use ExcelWriter class 
+
+with pd.ExcelWriter("C:\Users\Sairampc\Desktop\Orig_Replaced.xlsx") as writer:
+    df8.to_excel(writer, sheet_name="OrigSheet")
+    df9.to_excel(writer, sheet_name="ReplacedSheet")
 
 
 
