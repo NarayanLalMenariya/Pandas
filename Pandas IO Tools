@@ -1,0 +1,102 @@
+Create DataFrame using following ways:
+=======================================
+1. By Reading csv file
+------------------------
+import pandas as pd
+#Create DataFrame by reading csv file
+df1 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv")
+df1  #printing data frame
+
+
+output:
+	|Avg Temp|month|windSpeed
+0	|29	     |April|109
+1	|30	     |may	 |123
+2	|34	     |June |90
+3	|27	     |July |120
+4	|26	     |aug	 |123
+
+
+=======================================
+2. By reading excel sheet
+-------------------------
+#login to command prompt and install xlrd
+pip install xlrd 
+-----------------
+import pandas as pd
+df2 = pd.read_excel("C:\Users\Sairampc\Desktop\PandasXlSheet.xlsx","Sheet1")
+df2
+
+output:
+	|Avg Temp|month|windSpeed
+0	|29	     |April|109
+1	|30	     |may	 |123
+2	|34	     |June |90
+3	|27	     |July |120
+4	|26	     |aug	 |123
+
+
+=======================================
+3. By using dictionary
+-------------------------
+# Create DataFrame using dictionary
+whether_data = {
+    'Avg Temp':[29,30,34,27,26],
+    'month':['April','may','June','July',"aug"],
+    'windSpeed':[109,123,90,120,123]
+}
+df3 = pd.DataFrame(whether_data)
+df3
+
+output:
+	|Avg Temp|month|windSpeed
+0	|29	     |April|109
+1	|30	     |may	 |123
+2	|34	     |June |90
+3	|27	     |July |120
+4	|26	     |aug	 |123
+======================================
+4. By using list of tuples
+--------------------------
+whether_data = [
+    (29,'April',109),
+    (30,'may',123),
+    (34,'June',90),
+    (27,'July',120),
+     (26,'aug',123),
+]
+
+df4 = pd.DataFrame(whether_data,columns=(["Avg Temp","month","windSpeed"])) 
+df4
+
+output:
+	|Avg Temp|month|windSpeed
+0	|29	     |April|109
+1	|30	     |may	 |123
+2	|34	     |June |90
+3	|27	     |July |120
+4	|26	     |aug	 |123
+
+=======================================
+5. By using List of dictionary
+-------------------------------
+whether_data = [
+{'Avg Temp':29, 'month':'April','windSpeed':109},
+{'Avg Temp':30, 'month':'may','windSpeed':123},
+{'Avg Temp':34, 'month':'June','windSpeed':90},
+{'Avg Temp':27, 'month':'July','windSpeed':120},
+{'Avg Temp':26, 'month':'aug','windSpeed':123}
+]
+df5 = pd.DataFrame(whether_data)
+df5
+
+output:
+	|Avg Temp|month|windSpeed
+0	|29	     |April|109
+1	|30	     |may	 |123
+2	|34	     |June |90
+3	|27	     |July |120
+4	|26	     |aug	 |123
+
+========================================
+
