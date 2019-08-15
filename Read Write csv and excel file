@@ -1,0 +1,101 @@
+csv -> comma separated file
+==================================================
+1. Read and Display csv file whose data is 
+unwanted|		    |
+AvgTemp |Month	|WindSpeed
+29	    |April	|109
+30	    |May	  |123
+34	    |June	  |90
+27	    |July	  |120
+26	    |August |123
+-----------------------------
+import pandas as pd
+df = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv")
+df 
+
+output :
+ unwanted	| Unnamed:1|	Unnamed: 2
+0 AvgTemp |Month	   |WindSpeed
+1 29	    |April	   |109
+2 30	    |May	     |123
+3 34	    |June	     |90
+4 27	    |July	     |120
+5 26	    |August    |123
+
+==================================================
+2. Avoid printing first line
+------------------------------
+#1. using skiprows method;
+df2 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv", skiprows=1)
+df2
+
+# 2. using header method;
+df3 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv", header=1)
+df3
+
+output :
+0 AvgTemp |Month	   |WindSpeed
+1 29	    |April	   |109
+2 30	    |May	     |123
+3 34	    |June	     |90
+4 27	    |July	     |120
+5 26	    |August    |123
+
+====================================================
+3. Add Header --> usefull when file doest not have any header
+------------------------
+#1. Add Header = None
+df3 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv", header=None)
+df3
+
+output :
+    0     |     1    |       2
+ unwanted	| Unnamed:1|	Unnamed: 2
+0 AvgTemp |Month	   |WindSpeed
+1 29	    |April	   |109
+2 30	    |May	     |123
+3 34	    |June	     |90
+4 27	    |July	     |120
+5 26	    |August    |123
+---------------------------------
+
+#2. Add header name & Skeep firat row
+df4 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv",skiprows=1, names=["degreeCent","Year2019","Kmph" ])
+df4
+
+output:
+ degreeCent|Year2019 |Kmph
+0 AvgTemp |Month	   |WindSpeed
+1 29	    |April	   |109
+2 30	    |May	     |123
+3 34	    |June	     |90
+4 27	    |July	     |120
+5 26	    |August    |123
+=======================================================
+4. Read Exactly 3 rows along with header from file whose data is 
+AvgTemp |Month	|WindSpeed
+29	    |April	|109
+30	    |May	  |123
+34	    |June	  |90
+27	    |July	  |120
+26	    |August |123
+----------------------------------------
+df5 = pd.read_csv("C:\Users\Sairampc\Desktop\FirstFilePandas.csv",nrows=3)
+df5
+
+output:
+
+  AvgTemp	Month	WindSpeed
+0	29	    April	109
+1	30	    May	  123
+2	34	    June	90
+
+-----------------------------------------
+
+
+
+
+
+
+
+
