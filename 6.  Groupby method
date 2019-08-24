@@ -1,0 +1,148 @@
+# Use Groupby method to analyze Data in Pandas
+=======================================================================
+import pandas as pd
+import numpy as np
+
+1. Read File WhetherData_GroupBy.csv
+------------------------------------------
+df = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData_GroupBy.csv")
+df
+
+output: 
+
+day	temperature	windSpeed	event	city
+0	01-01-2017	32	6	Rain	NewYork
+1	01-02-2017	36	7	Sunny	NewYork
+2	01-03-2017	28	12	Snow	NewYork
+3	01-04-2017	33	7	Cloudy	NewYork
+4	01-01-2017	90	5	Rain	Mumbai
+5	01-02-2017	85	12	Sunny	Mumbai
+6	01-03-2017	87	5	Sunny	Mumbai
+7	01-04-2017	92	5	Rain	Mumbai
+8	01-01-2017	45	20	Cloudy	Paris
+9	01-02-2017	50	13	Cloudy	Paris
+10	01-03-2017	54	8	Snow	Paris
+11	01-04-2017	42	10	Sunny	Paris
+
+
+# what is Split,Combine and Apply give example
+===================================================================
+# **************************** SPLIT ******************************
+2. Separate Data in different group , group them by city Name
+----------------------------------------------------------------
+grp = df.groupby('city')
+grp
+
+output:
+<pandas.core.groupby.generic.DataFrameGroupBy object at 0x076D5830>
+
+# groupby is similar to sql command :select * from table group by city
+# groupby method creates various objects where:
+#city -> will be Key
+#DataFrame -> will be value
+=======================================================================
+3. Get All the group 
+---------------------------
+# Group Here city -> key & cities -> Value(DataFrame)
+for city,cities in grp:
+    print city
+    print cities
+ 
+ output:
+ Mumbai
+          day  temperature  windSpeed  event    city
+4  01-01-2017           90          5  Rain   Mumbai
+5  01-02-2017           85         12  Sunny  Mumbai
+6  01-03-2017           87          5  Sunny  Mumbai
+7  01-04-2017           92          5  Rain   Mumbai
+NewYork
+          day  temperature  windSpeed   event     city
+0  01-01-2017           32          6   Rain   NewYork
+1  01-02-2017           36          7   Sunny  NewYork
+2  01-03-2017           28         12    Snow  NewYork
+3  01-04-2017           33          7  Cloudy  NewYork
+Paris
+           day  temperature  windSpeed   event   city
+8   01-01-2017           45         20  Cloudy  Paris
+9   01-02-2017           50         13  Cloudy  Paris
+10  01-03-2017           54          8    Snow  Paris
+11  01-04-2017           42         10   Sunny  Paris
+=======================================================================
+# ************************** APPLY ************************************
+# min, max, avg etc methods are some example of apply
+
+# ************************** COMBINE **********************************
+4. Application of groupby method()
+------------------------------------
+# Example: Get maximum & minimum temperature of all cities
+grp.max()
+
+output:
+
+	day	temperature	windSpeed	event
+city				
+Mumbai	01-04-2017	92	12	Sunny
+NewYork	01-04-2017	36	12	Sunny
+Paris	01-04-2017	54	20	Sunny
+
+-------------------------------------
+grp.min()
+
+output:
+
+	day	temperature	windSpeed	event
+city				
+Mumbai	01-01-2017	85	5	Rain
+NewYork	01-01-2017	28	6	Cloudy
+Paris	01-01-2017	42	8	Cloudy
+
+-------------------------------------
+grp.mean()
+
+output:
+temperature	windSpeed
+city		
+Mumbai	88.50	6.75
+NewYork	32.25	8.00
+Paris	47.75	12.75
+
+-------------------------------------
+grp.describe()
+
+output:
+	temperature	windSpeed
+count	mean	std	min	25%	50%	75%	max	count	mean	std	min	25%	50%	75%	max
+city																
+Mumbai	4.0	88.50	3.109126	85.0	86.50	88.5	90.50	92.0	4.0	6.75	3.500000	5.0	5.00	5.0	6.75	12.0
+NewYork	4.0	32.25	3.304038	28.0	31.00	32.5	33.75	36.0	4.0	8.00	2.708013	6.0	6.75	7.0	8.25	12.0
+Paris	4.0	47.75	5.315073	42.0	44.25	47.5	51.00	54.0	4.0	12.75	5.251984	8.0	9.50	11.5	14.75	20.0
+
+=======================================================================
+5. Get value of individual group
+-------------------------------------
+grp.get_group('Mumbai')
+
+output:
+day	temperature	windSpeed	event	city
+4	01-01-2017	90	5	Rain	Mumbai
+5	01-02-2017	85	12	Sunny	Mumbai
+6	01-03-2017	87	5	Sunny	Mumbai
+7	01-04-2017	92	5	Rain	Mumbai
+
+=======================================================================
+6. Plot data by matplot lib
+--------------------------------------
+%matplotlib inline
+grp.plot()
+
+output:
+city
+Mumbai     AxesSubplot(0.125,0.125;0.775x0.755)
+NewYork    AxesSubplot(0.125,0.125;0.775x0.755)
+Paris      AxesSubplot(0.125,0.125;0.775x0.755)
+dtype: object
+
+Here graph can not be copied
+
+=======================================================================
+
