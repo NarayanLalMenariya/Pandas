@@ -1,0 +1,241 @@
+Use Replace method to handle missing Data
+=====================================================================
+import pandas as pd
+import numpy as np
+
+1.Read File WhetherData3.csv
+---------------------------------------------
+df3 = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData3.csv")
+df3
+
+output :
+	day	temperature	windSpeed	event
+0	01-01-2017	32	6	Rain
+1	01-02-2017	-99999	7	Sunny
+2	01-03-2017	28	-99999	Snow
+3	01-04-2017	-99999	7	no event
+4	01-05-2017	32	-99999	Rain
+5	01-06-2017	31	2	Sunny
+6	01-06-2017	34	5	no event
+
+=====================================================================
+2. Read File WhetherData4.csv
+----------------------------------------------
+df4 = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData4.csv")
+df4
+
+output :
+day	temperature	windSpeed	event
+0	01-01-2017	32	6	Rain
+1	01-02-2017	-99999	7	Sunny
+2	01-03-2017	28	-99999	Snow
+3	01-04-2017	-99999	7	0
+4	01-05-2017	32	-88888	Rain
+5	01-06-2017	31	2	Sunny
+6	01-06-2017	34	5	0
+=====================================================================
+3. Replace -99999 & -88888 to NaN using list in replace() method
+-----------------------------------------------------------------
+New_df = df4.replace([-99999,-88888],np.NaN)
+New_df
+
+output :
+day	temperature	windSpeed	event
+0	01-01-2017	32.0	6.0	Rain
+1	01-02-2017	NaN	7.0	Sunny
+2	01-03-2017	28.0	NaN	Snow
+3	01-04-2017	NaN	7.0	0
+4	01-05-2017	32.0	NaN	Rain
+5	01-06-2017	31.0	2.0	Sunny
+6	01-06-2017	34.0	5.0	0
+=====================================================================
+4. Replace 0 with No Event
+--------------------------------
+New_df = df4.replace(0,np.NaN)
+New_df
+# Coz Zero is a valid value in complete DataFrame Hence
+# use Dictionay to replace value in perticular column
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32	6	Rain
+1	01-02-2017	-99999	7	Sunny
+2	01-03-2017	28	-99999	Snow
+3	01-04-2017	-99999	7	0
+4	01-05-2017	32	-88888	Rain
+5	01-06-2017	31	2	Sunny
+6	01-06-2017	34	5	0
+
+5. Use dictionary in replace method and replace -99999, -88888 & 0 with NaN
+---------------------------------------------------------------------------
+New_df = df4.replace({
+    'temperatur':-99999,
+    'windSpeed':-88888,
+    'event':'0'
+},np.NaN)
+New_df
+
+# try with 'event':0 ===> Zero not getting replace with NaN why?
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32	6.0	Rain
+1	01-02-2017	-99999	7.0	Sunny
+2	01-03-2017	28	-99999.0	Snow
+3	01-04-2017	-99999	7.0	NaN
+4	01-05-2017	32	NaN	Rain
+5	01-06-2017	31	2.0	Sunny
+6	01-06-2017	34	5.0	NaN
+
+=====================================================================
+6. In DataFrame df3 replace -99999 with NaN & no event with Sunny
+-----------------------------------------------------------------
+New_df = df3.replace({
+    -99999:np.NaN,
+    'no event':'Sunny'
+})
+New_df
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32.0	6.0	Rain
+1	01-02-2017	NaN	7.0	Sunny
+2	01-03-2017	28.0	NaN	Snow
+3	01-04-2017	NaN	7.0	Sunny
+4	01-05-2017	32.0	NaN	Rain
+5	01-06-2017	31.0	2.0	Sunny
+6	01-06-2017	34.0	5.0	Sunny
+
+=====================================================================
+7. Read File WhetherData5.csv and replace units ( C, F , mph) 
+with blank
+-----------------------------------------------------------------
+df5 = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData5.csv")
+df5
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32 F	6 mph	Rain
+1	01-02-2017	-99999	7	Sunny
+2	01-03-2017	28 C	-99999	Snow
+3	01-04-2017	-99999	7	0
+4	01-05-2017	32	-88888	Rain
+5	01-06-2017	31	2 mph	Sunny
+6	01-06-2017	34	5	0
+
+# use Regex 
+---------------------
+New_df = df5.replace('[A-Za-z]','',regex=True)
+New_df
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32	6	
+1	01-02-2017	-99999	7	
+2	01-03-2017	28	-99999	
+3	01-04-2017	-99999	7	0
+4	01-05-2017	32	-88888	
+5	01-06-2017	31	2	
+6	01-06-2017	34	5	0
+
+---------------------------------------------------------
+# Above method has replaced all events also with blank 
+replace only C , F and mph
+------------------------------------
+New_df = df5.replace({
+    'temperature':'[A-Za-z]',
+    'windSpeed':'[A-Za-z]'
+},'',regex=True)
+New_df
+
+# what happens when u give 'temperatur':'[A-Za-z]', ==> There is not e in spelling of temperature
+# Value will not get replace also it will not through any error
+
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32	6	Rain
+1	01-02-2017	-99999	7	Sunny
+2	01-03-2017	28	-99999	Snow
+3	01-04-2017	-99999	7	0
+4	01-05-2017	32	-88888	Rain
+5	01-06-2017	31	2	Sunny
+6	01-06-2017	34	5	0
+
+=====================================================================
+8. From temperature column replace values which are below 0 with 30 
+in New_df Frame
+----------------------------------------------------------------
+New_df.loc[New_df['temperature'] < '0' ,'temperature'] = 30
+New_df
+
+output:
+day	temperature	windSpeed	event
+0	01-01-2017	32	6	Rain
+1	01-02-2017	30	7	Sunny
+2	01-03-2017	28	-99999	Snow
+3	01-04-2017	30	7	0
+4	01-05-2017	32	-88888	Rain
+5	01-06-2017	31	2	Sunny
+6	01-06-2017	34	5	0
+
+=====================================================================
+9. In New_df frame replace column name with unit 
+--------------------------------------------------
+New_df.columns = ['Day','Temperature(C)','WindSpeed(mph)','Event']
+New_df
+
+output:
+Day	Temperature(C)	WindSpeed(mph)	Event
+0	01-01-2017	32	6	Rain
+1	01-02-2017	30	7	Sunny
+2	01-03-2017	28	-99999	Snow
+3	01-04-2017	30	7	0
+4	01-05-2017	32	-88888	Rain
+5	01-06-2017	31	2	Sunny
+6	01-06-2017	34	5	0
+
+# Access value of Temperature
+---------------------------------
+New_df['Temperature(C)']
+
+output:
+0    32 
+1     30
+2    28 
+3     30
+4     32
+5     31
+6     34
+Name: Temperature(C), dtype: object
+=====================================================================
+10. Create New DataFrame using DataFrame method 
+----------------------------------------------------
+df = pd.DataFrame({
+    'score':['exceptional','average','good','poor','average','exceptional'],
+    'student':['Shera','Jayant','Pankaj','Rahul','Shubhash','Yogesh']
+})
+df
+
+output:
+score	student
+0	exceptional	Shera
+1	average	Jayant
+2	good	Pankaj
+3	poor	Rahul
+4	average	Shubhash
+5	exceptional	Yogesh
+=====================================================================
+11. Replace score with numerical values
+--------------------------------------------
+New_df = df.replace(['exceptional','average','good','poor','average','exceptional'],[9,5,8,6,5,9])
+New_df
+
+output:
+score	student
+0	9	Shera
+1	5	Jayant
+2	8	Pankaj
+3	6	Rahul
+4	5	Shubhash
+5	9	Yogesh
