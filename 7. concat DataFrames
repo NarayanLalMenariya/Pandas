@@ -1,0 +1,278 @@
+# Use concat() method to concat two or more frames
+========================================================================
+import pandas as pd
+import numpy as np
+
+1. Create two DataFrame which consist data for India & US City Data
+-------------------------------------------------------------------
+weather_india = pd.DataFrame({
+    'city':['Mumbai','Delhi','Bangalore'],
+    'temperature':[32,45,30],
+    'humidity':[80,60,78]
+})
+weather_india
+
+output:
+city	humidity	temperature
+0	Mumbai	80	32
+1	Delhi	60	45
+2	Bangalore	78	30
+
+-------------------------
+
+weather_us = pd.DataFrame({
+    'city':['NewYork','Chicago','Oriando'],
+    'temperature':[21,14,35],
+    'humidity':[68,65,75]
+})
+weather_us
+
+output:
+city	humidity	temperature
+0	NewYork	68	21
+1	Chicago	65	14
+2	Oriando	75	35
+
+----------------------------
+# Combine both frames
+----------------------------
+New_df = pd.concat([weather_india, weather_us])
+New_df
+
+output:
+city	humidity	temperature
+0	Mumbai	80	32
+1	Delhi	60	45
+2	Bangalore	78	30
+0	NewYork	68	21
+1	Chicago	65	14
+2	Oriando	75	35
+
+# what happens when u give humidiity instead of humidity while combining 
+# both data frame
+
+========================================================================
+2. Combine data frame by ignoring index
+------------------------------------------
+New_df = pd.concat([weather_india, weather_us],ignore_index=True)
+New_df 
+
+output:
+city	humidity	temperature
+0	Mumbai	80	32
+1	Delhi	60	45
+2	Bangalore	78	30
+3	NewYork	68	21
+4	Chicago	65	14
+5	Oriando	75	35
+
+========================================================================
+3. Show Use case of 'keys' argument in concat method
+---------------------------------------------------
+# Now from above New_df getting Data for perticular country 
+# let say india is again lengthy task. So how to create
+# concat data frame which can be easily access to get data
+# use keys
+
+New_df = pd.concat([weather_india, weather_us],keys=["India","US"])
+New_df
+
+output:
+
+city	humidity	temperature
+India	0	Mumbai	80	32
+1	Delhi	60	45
+2	Bangalore	78	30
+US	0	NewYork	68	21
+1	Chicago	65	14
+2	Oriando	75	35
+
+========================================================================
+4. Now get Data for Individual country
+----------------------------------------
+New_df.loc['India']
+
+output:
+
+city	humidity	temperature
+0	Mumbai	80	32
+1	Delhi	60	45
+2	Bangalore	78	30
+----------------------------
+New_df.loc["US"]
+
+output:
+
+city	humidity	temperature
+0	NewYork	68	21
+1	Chicago	65	14
+2	Oriando	75	35
+
+========================================================================
+5. Show use case of 'axis' argument in concat() method
+-------------------------------------------------------
+# by default value of axis = 0 , Hence when we concat 
+# two DataFrame it will get append in row. For Example
+
+temperature_df = pd.DataFrame({
+    'city':['Mumbai','Delhi','Bangalore'],
+    'temperature':[32,45,30],
+})
+temperature_df
+
+output:
+city	temperature
+0	Mumbai	32
+1	Delhi	45
+2	Bangalore	30
+-----------------------------
+windSpeed_df = pd.DataFrame({
+    'city':['Mumbai','Delhi','Bangalore'],
+    'windSpeed':[7,12,5],
+})
+windSpeed_df
+
+output:
+city	windSpeed
+0	Mumbai	7
+1	Delhi	12
+2	Bangalore	5
+
+-----------------------------
+# with argument axis=0
+New_df = pd.concat([windSpeed_df,temperature_df],axis=0)
+New_df
+
+output:
+city	temperature	windSpeed
+2	Delhi	NaN	7.0
+1	Mumbai	NaN	12.0
+0	Mumbai	32.0	NaN
+1	Delhi	45.0	NaN
+2	Bangalore	30.0	NaN
+
+------------------------------
+# with argument axis=1
+New_df = pd.concat([windSpeed_df,temperature_df],axis=1)
+New_df
+
+output:
+city	windSpeed	city	temperature
+0	NaN	NaN	Mumbai	32
+1	Mumbai	12.0	Delhi	45
+2	Delhi	7.0	Bangalore	30
+
+========================================================================
+6. Here in above example city column appears twice  avoid that
+------------------------------------------------------------------
+New_df = pd.concat([windSpeed_df,temperature_df['temperature']],axis=1)
+New_df 
+
+output:
+
+	city	windSpeed	temperature
+0	NaN	NaN	32
+1	Mumbai	12.0	45
+2	Delhi	7.0	30
+
+========================================================================
+7. Show use case of 'index' argument in concat method
+------------------------------------------------------
+# let windSpeed df is like this
+windSpeed_df = pd.DataFrame({
+    'city':['Delhi','Mumbai'],
+    'windSpeed':[7,12],
+})
+windSpeed_df
+
+output:
+city	windSpeed
+0	Delhi	7
+1	Mumbai	12
+
+------------------------
+# Now combine both and check final output
+New_df = pd.concat([windSpeed_df,temperature_df],axis=1)
+New_df
+
+output:
+
+city	windSpeed	city	temperature
+0	Delhi	7.0	Mumbai	32
+1	Mumbai	12.0	Delhi	45
+2	NaN	NaN	Bangalore	30
+
+------------------------
+# combination is not correct ... to avoid this create data frame with index argument
+
+temperature_df = pd.DataFrame({
+    'city':['Mumbai','Delhi','Bangalore'],
+    'temperature':[32,45,30],
+},index=[1,2,3])
+temperature_df
+
+output:
+city	temperature
+1	Mumbai	32
+2	Delhi	45
+3	Bangalore	30
+
+# mumbai , delhi & bangalore has correspondence index 1,2 & 3
+# same should be there with windSpeed df also
+-------------------------
+windSpeed_df = pd.DataFrame({
+    'city':['Delhi','Mumbai'],
+    'windSpeed':[7,12],
+},index=[2,1])
+windSpeed_df
+
+output:
+city	windSpeed
+2	Delhi	7
+1	Mumbai	12
+
+--------------------------
+# Now concat both
+New_df = pd.concat([windSpeed_df,temperature_df],axis=1)
+New_df
+# city having index 1 will  appear first in new df
+
+output:
+city	windSpeed	city	temperature
+1	Mumbai	12.0	Mumbai	32
+2	Delhi	7.0	Delhi	45
+3	NaN	NaN	Bangalore	30
+
+========================================================================
+8. concat 'series' in DataFrame
+---------------------------------
+# let we have one series of event
+sr = pd.Series(["Humidity","Dry","Cold"], name="event")
+sr
+
+output:
+0    Humidity
+1         Dry
+2        Cold
+Name: event, dtype: object
+-------------------------------
+
+# concat series with DataFrame
+temperature_df = pd.DataFrame({
+    'city':['Mumbai','Delhi','Bangalore'],
+    'temperature':[32,45,30],
+})
+temperature_df
+New_df = pd.concat([temperature_df,sr],axis=1)
+New_df
+
+
+output:
+city	temperature	event
+0	Mumbai	32	Humidity
+1	Delhi	45	Dry
+2	Bangalore	30	Cold
+
+# what happens when we gives index=[1,2,3 ] in temperature_df
+========================================================================
+
