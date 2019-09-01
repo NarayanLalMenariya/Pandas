@@ -1,0 +1,283 @@
+# Merge two data frame using df merge() method:
+======================================================================
+import pandas as pd
+import numpy as np
+
+1. Declare df1
+-----------------
+df1 = pd.DataFrame({
+    'city':["chicago","new york","orinado"],
+    'temperature':[21,14,35]
+})
+df1
+
+output:
+city	temperature
+0	chicago	21
+1	new york	14
+2	orinado	35
+
+2. decalre df2
+-----------------
+df2 = pd.DataFrame({
+    'city':["chicago","new york","orinado"],
+    'humidity':[65,68,75]
+})
+df2
+
+output:
+city	humidity
+0	chicago	65
+1	new york	68
+2	orinado	75
+
+======================================================================
+3. merge two data farme df1 & df2
+------------------------------------
+df3 = pd.merge(df1,df2,on="city") 
+df3
+
+#  with hiumidity will get KeyError coz that is not common b/w two
+output:
+city	temperature	humidity
+0	chicago	21	65
+1	new york	14	68
+2	orinado	35	75
+
+======================================================================
+4. what is inner join, intersection(set theory intersection ==> common parameter)
+# in pandas dataFrame . show example
+--------------------------------------------
+# do merge with df4 and df5.
+df4 = pd.DataFrame({
+    'city':["chicago","new york","orinado", "baltimore"],
+    'temperature':[21,14,35,32]
+})
+df4
+
+output:
+city	temperature
+0	chicago	21
+1	new york	14
+2	orinado	35
+3	baltimore	32
+--------------------------------------------
+# df5 does not have orinado & baltomore instead have san francisco
+df5 = pd.DataFrame({
+    'city':["chicago","new york","san farncisco"],
+    'humidity':[65,68,71]
+})
+df5
+
+output:
+city	humidity
+0	chicago	65
+1	new york	68
+2	san farncisco	71
+
+--------------------------------------------
+
+# inner join, intersection 
+df3 = pd.merge(df4,df5, on="city")
+df3
+
+output:
+city	temperature	humidity
+0	chicago	21	65
+1	new york	14	68
+
+======================================================================
+5.  show example or outerjoin or union (set theory ==> combine all)
+-------------------------------------------------------------------
+df3 = pd.merge(df4,df5,how="outer")
+df3
+
+output:
+city	temperature	humidity
+0	chicago	21.0	65.0
+1	new york	14.0	68.0
+2	orinado	35.0	NaN
+3	baltimore	32.0	NaN
+4	san farncisco	NaN	71.0
+
+
+======================================================================
+6. show example of left & right join
+------------------------------------------
+# left join : common parameter(intersection part)+All remaining param of left data frame
+# here left data frame is df4 & right data frame is df5
+df3 = pd.merge(df4,df5,how="left")
+df3
+
+output:
+city	temperature	humidity
+0	chicago	21	65.0
+1	new york	14	68.0
+2	orinado	35	NaN
+3	baltimore	32	NaN
+
+-------------------------------------------
+# Right join : commona param (intersection part )+ all remaining param of right dataFrame
+df3 = pd.merge(df4,df5,how="right")
+df3
+#default value of how is "inner"
+
+output:
+city	temperature	humidity
+0	chicago	21.0	65
+1	new york	14.0	68
+2	san farncisco	NaN	71
+
+======================================================================
+7. with outer join show which value has taken from which frame : 
+use of indicator input argument
+------------------------------------------------------------------
+df3 = pd.merge(df4,df5,how='outer',indicator=True)
+df3
+#default value if indicator is false
+
+output:
+city	temperature	humidity	_merge
+0	chicago	21.0	65.0	both
+1	new york	14.0	68.0	both
+2	orinado	35.0	NaN	left_only
+3	baltimore	32.0	NaN	left_only
+4	san farncisco	NaN	71.0	right_only
+
+======================================================================
+8. do merge without using on
+--------------------------------
+df3 = pd.merge(df4,df5)
+df3
+
+#Column or index level names to join on.These must be found in both DataFrames. 
+#If on is None and not merging on indexes then this defaults to
+#the intersection of the columns in both DataFrames.
+
+output:
+city	temperature	humidity
+0	chicago	21	65
+1	new york	14	68
+======================================================================
+9. show use case of argument suuffixes
+----------------------------------------
+df1 = pd.DataFrame({
+    'city':["chicago","new york","orinado"],
+    'temperature':[21,14,35],
+    'humidity':[75,68,67]
+})
+df1
+
+output:
+city	humidity	temperature
+0	chicago	75	21
+1	new york	68	14
+2	orinado	67	35
+
+------------------------------------------
+df2 = pd.DataFrame({
+    'city':["chicago","new york","orinado"],
+    'temperature':[20,18,30],
+    'humidity':[70,68,79]
+})
+df2
+
+output:
+
+city	humidity	temperature
+0	chicago	70	20
+1	new york	68	18
+2	orinado	79	30
+
+--------------------------------------------
+# suffixes example :
+df3 = pd.merge(df1,df2)
+df3
+ 
+OUTPUT:
+	city	humidity	temperature
+
+# temperature and humidity both are common
+
+---------------------------------------------
+df3 = pd.merge(df1,df2,on="city")
+df3
+
+output;
+city	humidity_x	temperature_x	humidity_y	temperature_y
+0	chicago	75	21	70	20
+1	new york	68	14	68	18
+2	orinado	67	35	79	30
+
+# default value of suffixes is tupple of (str,str) = ('_x', '_y')
+
+---------------------------------------------
+df3 = pd.merge(df1,df2,on="city",suffixes=('_leftDf','_rightDf'))
+df3
+
+output:
+city	humidity_leftDf	temperature_leftDf	humidity_rightDf	temperature_rightDf
+0	chicago	75	21	70	20
+1	new york	68	14	68	18
+2	orinado	67	35	79	30
+
+======================================================================
+10. merge df1,df2 & df4
+---------------------------
+df3 = pd.merge(df1,df2,df3,on="city")
+df3
+
+output:
+---------------------------------------------------------------------------
+ValueError                                Traceback (most recent call last)
+<ipython-input-34-b4bb1c1a9bc1> in <module>()
+      1 # merge df1,df2 & df4
+----> 2 df3 = pd.merge(df1,df2,df3,on="city")
+      3 df3
+
+c:\python27\lib\site-packages\pandas\core\reshape\merge.pyc in merge(left, right, how, on, left_on, right_on, left_index, right_index, sort, suffixes, copy, indicator, validate)
+     46                          copy=copy, indicator=indicator,
+     47                          validate=validate)
+---> 48     return op.get_result()
+     49 
+     50 
+
+c:\python27\lib\site-packages\pandas\core\reshape\merge.pyc in get_result(self)
+    544                 self.left, self.right)
+    545 
+--> 546         join_index, left_indexer, right_indexer = self._get_join_info()
+    547 
+    548         ldata, rdata = self.left._data, self.right._data
+
+c:\python27\lib\site-packages\pandas\core\reshape\merge.pyc in _get_join_info(self)
+    754         else:
+    755             (left_indexer,
+--> 756              right_indexer) = self._get_join_indexers()
+    757 
+    758             if self.right_index:
+
+c:\python27\lib\site-packages\pandas\core\reshape\merge.pyc in _get_join_indexers(self)
+    733                                   self.right_join_keys,
+    734                                   sort=self.sort,
+--> 735                                   how=self.how)
+    736 
+    737     def _get_join_info(self):
+
+c:\python27\lib\site-packages\pandas\core\reshape\merge.pyc in _get_join_indexers(left_keys, right_keys, sort, how, **kwargs)
+   1140     # preserve left frame order if how == 'left' and sort == False
+   1141     kwargs = copy.copy(kwargs)
+-> 1142     if how == 'left':
+   1143         kwargs['sort'] = sort
+   1144     join_func = _join_functions[how]
+
+c:\python27\lib\site-packages\pandas\core\generic.pyc in __nonzero__(self)
+   1476         raise ValueError("The truth value of a {0} is ambiguous. "
+   1477                          "Use a.empty, a.bool(), a.item(), a.any() or a.all()."
+-> 1478                          .format(self.__class__.__name__))
+   1479 
+   1480     __bool__ = __nonzero__
+
+ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+
+# ValueError: The truth value of a DataFrame is ambiguous. Use a.empty, a.bool(), a.item(), a.any() or a.all().
+======================================================================
