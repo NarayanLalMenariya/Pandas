@@ -1,0 +1,162 @@
+# Use pivot and pivot table to give shape to DataFrames
+===============================================================
+import pandas as pd
+import numpy as np
+
+#----------------------------- PIVOT ---------------------------------------
+
+df = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData_Pivot.csv")
+df
+
+output:
+day	temperature	humidity	city
+0	01-01-2017	32	60	NewYork
+1	01-02-2017	34	70	NewYork
+2	01-03-2017	28	80	NewYork
+3	01-04-2017	33	75	NewYork
+4	01-01-2017	31	75	Mumbai
+5	01-02-2017	30	79	Mumbai
+6	01-03-2017	32	65	Mumbai
+7	01-04-2017	34	70	Mumbai
+8	01-01-2017	45	80	Paris
+9	01-02-2017	50	75	Paris
+10	01-03-2017	54	69	Paris
+11	01-04-2017	42	70	Paris
+
+===============================================================
+1. give shape to frame where index is day and column is city
+-------------------------------------------------------------
+df.pivot(index='day',columns='city')
+
+output:
+temperature	humidity
+city	Mumbai	NewYork	Paris	Mumbai	NewYork	Paris
+day						
+01-01-2017	31	32	45	75	60	80
+01-02-2017	30	34	50	79	70	75
+01-03-2017	32	28	54	65	80	69
+01-04-2017	34	33	42	70	75	70
+
+===============================================================
+2. get only humidity values
+---------------------------------
+df.pivot(index='day',columns='city', values='humidity')
+
+output:
+city	Mumbai	NewYork	Paris
+day			
+01-01-2017	75	60	80
+01-02-2017	79	70	75
+01-03-2017	65	80	69
+01-04-2017	70	75	70
+===============================================================
+3. #---------------------------- PIVOT TABLE -----------------------------
+df = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData_Pivot Table.csv")
+df
+
+OUTOUT:
+day	temperature	humidity	city
+0	05-01-2017	32	60	NewYork
+1	05-01-2017	34	70	NewYork
+2	05-02-2017	28	80	NewYork
+3	05-02-2017	33	75	NewYork
+4	05-01-2017	31	75	Mumbai
+5	05-01-2017	30	79	Mumbai
+6	05-02-2017	32	65	Mumbai
+7	05-02-2017	34	70	Mumbai
+
+===============================================================
+4. Calculate aggregate value of temperature and humidity on each days morning and evening data
+----------------------------------------------------------------------------
+# default value of argument aggfunc is 'mean'
+df.pivot_table(index="city",columns="day")
+
+output:
+humidity	temperature
+day	05-01-2017	05-02-2017	05-01-2017	05-02-2017
+city				
+Mumbai	77.0	67.5	30.5	33.0
+NewYork	65.0	77.5	33.0	30.5
+
+------------------------------------------
+#instead of mean calculate sum
+df.pivot_table(index="city",columns="day",aggfunc="sum")
+# use method min, max , count etc
+
+OUTPUT:
+humidity	temperature
+day	05-01-2017	05-02-2017	05-01-2017	05-02-2017
+city				
+Mumbai	154	135	61	66
+NewYork	130	155	66	61
+===============================================================
+5. give avg of 5/1/2017 & 5/2/2017 also or show one examle for argument margins
+--------------------------------------------------------------
+df.pivot_table(index="city",columns="day",margins=True)
+
+output:
+humidity	temperature
+day	05-01-2017	05-02-2017	All	05-01-2017	05-02-2017	All
+city						
+Mumbai	77.0	67.5	72.25	30.50	33.00	31.75
+NewYork	65.0	77.5	71.25	33.00	30.50	31.75
+All	71.0	72.5	71.75	31.75	31.75	31.75
+
+===============================================================
+6. calculate avg temperature for month may & june for new df
+-----------------------------------------------------
+df = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData_Grouper.csv")
+df
+output:
+day	temperature	city
+0	05-01-2017	32	NewYork
+1	05-01-2017	34	NewYork
+2	05-03-2017	28	NewYork
+3	05-04-2017	33	NewYork
+4	06-01-2017	31	NewYork
+5	06-01-2017	30	NewYork
+6	06-03-2017	32	NewYork
+7	06-04-2017	34	NewYork
+
+# bfr convert day column to actual dateTime format as grouper works with dateTime only
+
+type(df.day)           #pandas.core.series.Series
+type(df.day[0])        #str
+
+# converting day to time format 
+df['day'] = pd.to_datetime(df['day'])
+type(df.day[0])        #pandas._libs.tslibs.timestamps.Timestamp
+df
+
+output:
+day	temperature	city
+0	2017-05-01	32	NewYork
+1	2017-05-01	34	NewYork
+2	2017-05-03	28	NewYork
+3	2017-05-04	33	NewYork
+4	2017-06-01	31	NewYork
+5	2017-06-01	30	NewYork
+6	2017-06-03	32	NewYork
+7	2017-06-04	34	NewYork
+
+
+--------------------------------------------
+df.pivot_table(index=pd.Grouper(key='day',freq='M'),columns='city')
+
+output:
+temperature
+city	NewYork
+day	
+2017-05-31	31.75
+2017-06-30	31.75
+
+===============================================================
+7. df.pivot_table(index=pd.Grouper(key='day',freq='M'),columns='day')
+
+output:
+temperature
+day	2017-05-01	2017-05-03	2017-05-04	2017-06-01	2017-06-03	2017-06-04
+day						
+2017-05-31	33.0	28.0	33.0	NaN	NaN	NaN
+2017-06-30	NaN	NaN	NaN	30.5	32.0	34.0
+===============================================================
