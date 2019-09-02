@@ -1,0 +1,279 @@
+# give shape to dataFrame using melt(), stack() & unstack() method.
+=============================================================================
+# ------------------------ melt() -------------------------------------------
+1. Reshape table using melt function
+------------------------------------
+df = pd.read_csv("C:\Users\Sairampc\Desktop\Pandas\WhetherData_Melt.csv")
+df
+
+output:
+day	Chicago	Chennai	Berlin
+0	Monday	32	60	41
+1	Tuesday	34	70	35
+2	Wednesday	28	80	46
+3	Thursday	33	75	34
+4	Friday	31	75	36
+5	Saturday	30	79	38
+6	Sunday	32	65	35
+
+----------------------------------
+# Use melt function and keep day as x axis 
+df1 = pd.melt(df,id_vars=["day"])
+df1
+
+output:
+day	variable	value
+0	Monday	Chicago	32
+1	Tuesday	Chicago	34
+2	Wednesday	Chicago	28
+3	Thursday	Chicago	33
+4	Friday	Chicago	31
+5	Saturday	Chicago	30
+6	Sunday	Chicago	32
+7	Monday	Chennai	60
+8	Tuesday	Chennai	70
+9	Wednesday	Chennai	80
+10	Thursday	Chennai	75
+11	Friday	Chennai	75
+12	Saturday	Chennai	79
+13	Sunday	Chennai	65
+14	Monday	Berlin	41
+15	Tuesday	Berlin	35
+16	Wednesday	Berlin	46
+17	Thursday	Berlin	34
+18	Friday	Berlin	36
+19	Saturday	Berlin	38
+20	Sunday	Berlin	35
+
+=============================================================================
+2. Apply filtering on df1 to get data for only berlin
+-------------------------------------------------------
+df1[df1["variable"] == "Berlin"]
+
+output:
+day	variable	value
+14	Monday	Berlin	41
+15	Tuesday	Berlin	35
+16	Wednesday	Berlin	46
+17	Thursday	Berlin	34
+18	Friday	Berlin	36
+19	Saturday	Berlin	38
+20	Sunday	Berlin	35
+
+=============================================================================
+3. Change column name from variable and value to city and temperature
+--------------------------------------------------------------------------
+df1 = pd.melt(df,id_vars=["day"],var_name="City",value_name="Temperature")
+df1
+
+output:
+day	City	Temperature
+0	Monday	Chicago	32
+1	Tuesday	Chicago	34
+2	Wednesday	Chicago	28
+3	Thursday	Chicago	33
+4	Friday	Chicago	31
+5	Saturday	Chicago	30
+6	Sunday	Chicago	32
+7	Monday	Chennai	60
+8	Tuesday	Chennai	70
+9	Wednesday	Chennai	80
+10	Thursday	Chennai	75
+11	Friday	Chennai	75
+12	Saturday	Chennai	79
+13	Sunday	Chennai	65
+14	Monday	Berlin	41
+15	Tuesday	Berlin	35
+16	Wednesday	Berlin	46
+17	Thursday	Berlin	34
+18	Friday	Berlin	36
+19	Saturday	Berlin	38
+20	Sunday	Berlin	35
+
+=============================================================================
+4. use case of value_vars with example
+-------------------------------------------
+df2 = pd.melt(df1,id_vars=["day"],value_vars=["Temperature","City"])
+df2
+
+output:
+
+day	variable	value
+0	Monday	Temperature	32
+1	Tuesday	Temperature	34
+2	Wednesday	Temperature	28
+3	Thursday	Temperature	33
+4	Friday	Temperature	31
+5	Saturday	Temperature	30
+6	Sunday	Temperature	32
+7	Monday	Temperature	60
+8	Tuesday	Temperature	70
+9	Wednesday	Temperature	80
+10	Thursday	Temperature	75
+11	Friday	Temperature	75
+12	Saturday	Temperature	79
+13	Sunday	Temperature	65
+14	Monday	Temperature	41
+15	Tuesday	Temperature	35
+16	Wednesday	Temperature	46
+17	Thursday	Temperature	34
+18	Friday	Temperature	36
+19	Saturday	Temperature	38
+20	Sunday	Temperature	35
+21	Monday	City	Chicago
+22	Tuesday	City	Chicago
+23	Wednesday	City	Chicago
+24	Thursday	City	Chicago
+25	Friday	City	Chicago
+26	Saturday	City	Chicago
+27	Sunday	City	Chicago
+28	Monday	City	Chennai
+29	Tuesday	City	Chennai
+30	Wednesday	City	Chennai
+31	Thursday	City	Chennai
+32	Friday	City	Chennai
+33	Saturday	City	Chennai
+34	Sunday	City	Chennai
+35	Monday	City	Berlin
+36	Tuesday	City	Berlin
+37	Wednesday	City	Berlin
+38	Thursday	City	Berlin
+39	Friday	City	Berlin
+40	Saturday	City	Berlin
+41	Sunday	City	Berlin
+
+=============================================================================
+
+# Predict output of following --> this is not a part of this tutorial
+list=[10,20,30,40,50]
+print list
+
+for i in range(0,5):
+	print list[list[i] < 20]
+  
+output:
+
+[10, 20, 30, 40, 50]
+20
+10
+10
+10
+10
+
+
+=============================================================================
+# --------------------------------- stack() & unstack() ---------------------
+
+df = pd.read_excel("C:\Users\Sairampc\Desktop\Pandas\stocks.xlsx")
+df
+
+output:
+Unnamed: 0	Price	Unnamed: 2	Unnamed: 3	Price to earnings ratio (P/E)	Unnamed: 5	Unnamed: 6
+0	Company	Facebook	Google	Microsoft	Facebook	Google	Microsoft
+1	2017-06-05 00:00:00	155	955	66	37.1	32	30.31
+2	2017-06-06 00:00:00	150	987	69	36.98	31.3	30.56
+3	2017-06-07 00:00:00	153	963	62	36.78	31.7	30.46
+4	2017-06-08 00:00:00	155	1000	61	36.11	31.2	30.11
+5	2017-06-09 00:00:00	156	1012	66	37.07	30	31
+
+
+=============================================================================
+5. Read with header level [0,1] as excel file consist of two header
+--------------------------------------------------------------------
+import pandas as pd
+df2 = pd.read_excel("C:\Users\Sairampc\Desktop\Pandas\stocks.xlsx",header=[0,1])
+df2
+
+OUTPUT:
+Unnamed: 0_level_0	Price	Price to earnings ratio (P/E)
+Company	Facebook	Google	Microsoft	Facebook	Google	Microsoft
+0	2017-06-05	155	955	66	37.10	32.0	30.31
+1	2017-06-06	150	987	69	36.98	31.3	30.56
+2	2017-06-07	153	963	62	36.78	31.7	30.46
+3	2017-06-08	155	1000	61	36.11	31.2	30.11
+4	2017-06-09	156	1012	66	37.07	30.0	31.00
+
+=============================================================================
+6. df2.stack()
+
+OUTPUT:
+Price	Price to earnings ratio (P/E)	Unnamed: 0_level_0
+0	Company	NaN	NaN	2017-06-05
+Facebook	155.0	37.10	NaT
+Google	955.0	32.00	NaT
+Microsoft	66.0	30.31	NaT
+1	Company	NaN	NaN	2017-06-06
+Facebook	150.0	36.98	NaT
+Google	987.0	31.30	NaT
+Microsoft	69.0	30.56	NaT
+2	Company	NaN	NaN	2017-06-07
+Facebook	153.0	36.78	NaT
+Google	963.0	31.70	NaT
+Microsoft	62.0	30.46	NaT
+3	Company	NaN	NaN	2017-06-08
+Facebook	155.0	36.11	NaT
+Google	1000.0	31.20	NaT
+Microsoft	61.0	30.11	NaT
+4	Company	NaN	NaN	2017-06-09
+Facebook	156.0	37.07	NaT
+Google	1012.0	30.00	NaT
+Microsoft	66.0	31.00	NaT
+
+=============================================================================
+7. df3 = df2.stack(level=1)
+df3
+
+OUTPUT:
+	Price	Price to earnings ratio (P/E)	Unnamed: 0_level_0
+0	Company	NaN	NaN	2017-06-05
+Facebook	155.0	37.10	NaT
+Google	955.0	32.00	NaT
+Microsoft	66.0	30.31	NaT
+1	Company	NaN	NaN	2017-06-06
+Facebook	150.0	36.98	NaT
+Google	987.0	31.30	NaT
+Microsoft	69.0	30.56	NaT
+2	Company	NaN	NaN	2017-06-07
+Facebook	153.0	36.78	NaT
+Google	963.0	31.70	NaT
+Microsoft	62.0	30.46	NaT
+3	Company	NaN	NaN	2017-06-08
+Facebook	155.0	36.11	NaT
+Google	1000.0	31.20	NaT
+Microsoft	61.0	30.11	NaT
+4	Company	NaN	NaN	2017-06-09
+Facebook	156.0	37.07	NaT
+Google	1012.0	30.00	NaT
+Microsoft	66.0	31.00	NaT
+
+=============================================================================
+8. unstack df3 back to original form
+------------------------------------------
+df3.unstack()
+
+OUTPUT:
+	Price	Price to earnings ratio (P/E)	Unnamed: 0_level_0
+Company	Facebook	Google	Microsoft	Company	Facebook	Google	Microsoft	Company	Facebook	Google	Microsoft
+0	NaN	155.0	955.0	66.0	NaN	37.10	32.0	30.31	2017-06-05	NaT	NaT	NaT
+1	NaN	150.0	987.0	69.0	NaN	36.98	31.3	30.56	2017-06-06	NaT	NaT	NaT
+2	NaN	153.0	963.0	62.0	NaN	36.78	31.7	30.46	2017-06-07	NaT	NaT	NaT
+3	NaN	155.0	1000.0	61.0	NaN	36.11	31.2	30.11	2017-06-08	NaT	NaT	NaT
+4	NaN	156.0	1012.0	66.0	NaN	37.07	30.0	31.00	2017-06-09	NaT	NaT	NaT
+
+=============================================================================
+9. Read stocks_3_levels which is having header level three 
+------------------------------------------------------------------
+df4 = pd.read_excel("C:\Users\Sairampc\Desktop\Pandas\stocks_3_levels.xlsx",header=[0,1,2])
+df4
+
+output:
+	Unnamed: 0_level_0	Price Ratios	Income Statement
+Unnamed: 0_level_1	Price	Price to earnings ratio (P/E)	Net Sales	Net Profit
+Company	Facebook	Google	Microsoft	Facebook	Google	Microsoft	Facebook	Google	Microsoft	Facebook	Google	Microsoft
+0	Q1 2016	155	955	66	37.10	32.0	30.31	2.6	20	18.70	0.80	5.43	4.56
+1	Q2 2016	150	987	69	36.98	31.3	30.56	3.1	22	21.30	0.97	5.89	5.10
+2	Q3 2016	153	963	62	36.78	31.7	30.46	4.3	24	21.45	1.20	6.10	5.43
+3	Q4 2016	155	1000	61	36.11	31.2	30.11	6.7	26	21.88	1.67	6.50	5.89
+4	Q1 2017	156	1012	66	37.07	30.0	31.00	8.1	31	22.34	2.03	6.40	6.09
+=============================================================================
+
