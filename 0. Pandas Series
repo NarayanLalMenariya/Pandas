@@ -1,0 +1,459 @@
+import pandas as pd
+import numpy as np
+=============================================================
+#------------------------- Creating Series using array -------------------
+arr = np.array(['S','H','R','U','T','I'])
+print ("Array :",arr)
+
+output:
+('Array :', array(['S', 'H', 'R', 'U', 'T', 'I'], dtype='|S1'))
+--------------------------------
+
+ser = pd.Series(arr)
+print ("Series :",ser)
+
+output:
+('Series :', 0    S
+1    H
+2    R
+3    U
+4    T
+5    I
+dtype: object)
+
+----------------------
+type(ser)
+
+output:
+pandas.core.series.Series
+
+=============================================================
+#--------------------------- Creating Series using list ----------------------
+list = ['S', 'H', 'R', 'U', 'T', 'I']
+print ("List :",list)
+print ("Type :",type(list))
+
+output:
+('List :', ['S', 'H', 'R', 'U', 'T', 'I'])
+('Type :', <type 'list'>)
+-----------------------------
+
+ser = pd.Series(list)
+print ("Series :",ser)
+
+output:
+('Series :', 0    S
+1    H
+2    R
+3    U
+4    T
+5    I
+dtype: object)
+
+=============================================================
+# Create Series using array with own defined indexes
+# ser = pd.Series(arr,index=[10,20,30,40,50,60,70,80])
+# ValueError: Length of passed values is 6, index implies 8
+
+ser = pd.Series(arr,index=[10,20,30,40,50,60])
+print ("Indexed Ser:",ser)
+
+output:
+('Indexed Ser:', 10    S
+20    H
+30    R
+40    U
+50    T
+60    I
+dtype: object)
+
+--------------------------
+# with dtype = int
+#ser = pd.Series(arr,index=[10,20,30,40,50,60], dtype=int)
+#ValueError: invalid literal for int() with base 10: 'S'
+ser = pd.Series(arr,index=[10,20,30,40,50,60], dtype=str)
+print ser
+
+output:
+10    S
+20    H
+30    R
+40    U
+50    T
+60    I
+dtype: object
+
+--------------------------------
+# with name 
+ser = pd.Series(arr,index=[10,20,30,40,50,60], dtype=str, name='PandasSer')
+print ser
+
+output:
+10    S
+20    H
+30    R
+40    U
+50    T
+60    I
+Name: PandasSer, dtype: object
+
+=============================================================
+#------------------------- Creating a series from dictionary ---------------
+dict = {
+    'Name':['Vishnu','Harish','Shripal','Kanhaiya','Yogesh','Anil'],
+    'Age' :[23,21,19,23,20,18]
+}
+print ("Dict :",dict)
+
+output:
+('Dict :', {'Age': [23, 21, 19, 23, 20, 18], 'Name': ['Vishnu', 'Harish', 'Shripal', 'Kanhaiya', 'Yogesh', 'Anil']})
+
+----------------------------------------------
+
+ser = pd.Series(dict)
+print ser
+
+output:
+Age                              [23, 21, 19, 23, 20, 18]
+Name    [Vishnu, Harish, Shripal, Kanhaiya, Yogesh, Anil]
+dtype: object
+
+=============================================================
+#---------------------- Creating series from scalar values ---------------
+# index must be provided. scalar value will get repeated for every index
+ser = pd.Series(999,index=[0,1,2,3,4,5])
+print ser
+
+output:
+0    999
+1    999
+2    999
+3    999
+4    999
+5    999
+dtype: int64
+
+=============================================================
+#------------------------- Creating series using np function ----------------
+# show use case of linspace
+res = np.linspace(1,100,5)
+print ("Linspace Output(1,100,5) :",res)
+
+output:
+('Linspace Output(1,100,5) :', array([  1.  ,  25.75,  50.5 ,  75.25, 100.  ]))
+
+----------------------
+res = np.linspace(1,90,5)
+print ("Linspace Output(1,90,5) :",res)
+
+output:
+('Linspace Output(1,90,5) :', array([ 1.  , 23.25, 45.5 , 67.75, 90.  ]))
+-----------------------
+
+res = np.linspace(3,85,5)
+print ("Linspace Output(3,85,5) :",res)
+
+output:
+('Linspace Output(3,85,5) :', array([ 3. , 23.5, 44. , 64.5, 85. ]))
+
+-----------------------
+ser = pd.Series(np.linspace(3,85,5))
+print ser
+
+#ser = pd.Series(np.linspace(3,85,5),dtype=int), dtype=str will not give any error
+
+output:
+0     3.0
+1    23.5
+2    44.0
+3    64.5
+4    85.0
+dtype: float64
+
+
+=============================================================
+# --------------- Accessing element from series using index/position -------------------
+# get 3rd element 
+list = ['S', 'H', 'R', 'U', 'T', 'I']
+ser = pd.Series(list)
+print ("3rd Element :",ser[2])
+
+output:
+('3rd Element :', 'R')
+
+-----------------------------------------
+# get first 3 element
+print ("First 3 element :",ser[0:3])
+
+output:
+('First 3 element :', 0    S
+1    H
+2    R
+dtype: object)
+
+-----------------------------------------
+# get 3 & 4th element 
+print ser[2:4] # will give value of ser[2]& ser[3]
+
+output:
+2    R
+3    U
+dtype: object
+
+-----------------------------------------
+# get last value
+print ser[ser.index[-1]]
+
+output:
+I
+
+-----------------------------------------
+# get last values using tail
+# ------------- Some example of head() & tail() method------------
+print ser.head()
+
+output:
+0    S
+1    H
+2    R
+3    U
+4    T
+dtype: object
+
+------------------------------------------
+print ser.tail()
+
+output:
+1    H
+2    R
+3    U
+4    T
+5    I
+dtype: object
+
+------------------------------------------
+# get last index + value 
+print ser.tail(1)
+
+output:
+5    I
+dtype: object
+
+------------------------------------------
+print ser.tail(1).index[0]
+
+output:
+5
+------------------------------------------
+# get last value  only 
+print ser[ser.tail(1).index[0]]
+
+output:
+I
+
+------------------------------------------
+
+=============================================================
+# ----------------- Indexing and selecting Data in series ---------------
+# create data frame using dictionary
+df = pd.DataFrame(dict)
+df
+
+output:
+Age	Name
+0	23	Vishnu
+1	21	Harish
+2	19	Shripal
+3	23	Kanhaiya
+4	20	Yogesh
+5	18	Anil
+
+-----------------------------------
+#get series of Name
+ser = pd.Series(df['Name'])
+data = ser.head(5)
+# Indexing series using indexing operator []
+print data[3:5]
+
+output:
+3    Kanhaiya
+4      Yogesh
+Name: Name, dtype: object
+
+------------------------------------
+print ser
+
+output:
+0      Vishnu
+1      Harish
+2     Shripal
+3    Kanhaiya
+4      Yogesh
+5        Anil
+Name: Name, dtype: object
+
+------------------------------------
+print data
+
+output:
+0      Vishnu
+1      Harish
+2     Shripal
+3    Kanhaiya
+4      Yogesh
+Name: Name, dtype: object
+
+------------------------------------
+# indexing using .loc() method
+print data.loc[3:5]
+
+output:
+3    Kanhaiya
+4      Yogesh
+Name: Name, dtype: object
+
+------------------------------------
+# indexing using .iloc() method
+print data.iloc[3:5]
+
+output:
+3    Kanhaiya
+4      Yogesh
+Name: Name, dtype: object
+-------------------------------------
+
+data = pd.Series([5, 2, 3,7], index=['a', 'b', 'c', 'd'])
+print data.iloc[3:5]
+
+output:
+d    7
+dtype: int64
+-------------------------------------
+
+# print data.loc[3:5]
+# TypeError: cannot do slice indexing on <class 'pandas.core.indexes.base.Index'> with these indexers [3] of <type 'int'>
+--------------------------------------
+
+
+=============================================================
+# ------------------- Binary Operation on Series --------------------------
+ser  = pd.Series([5, 2, 3,7], index=['a', 'b', 'c', 'd'])
+ser1 = pd.Series([50, 12, 30,14], index=['e', 'f', 'g', 'h'])
+
+# Add both series
+ser2 = ser.add(ser1, fill_value=0)
+print ser2
+# default value of fill_value=None Hence all values will get replace with NaN
+
+output:
+a     5.0
+b     2.0
+c     3.0
+d     7.0
+e    50.0
+f    12.0
+g    30.0
+h    14.0
+dtype: float64
+
+--------------------------------------------------------------------------
+# Sub ser1 from ser
+ser2 = ser1.sub(ser,fill_value=0)
+print ser2
+
+# ser & ser1 both does not have matched index so it has given output like that
+output:
+a    -5.0
+b    -2.0
+c    -3.0
+d    -7.0
+e    50.0
+f    12.0
+g    30.0
+h    14.0
+dtype: float64
+-----------------------------------------------------------------------------
+# now do sub operation
+ser  = pd.Series([5, 2, 3,7], index=['a', 'b', 'c', 'd'])
+ser1 = pd.Series([50, 12, 30,14], index=['a', 'b', 'c', 'd'])
+ser2 = ser1.sub(ser,fill_value=0)
+print ser2
+
+output:
+a    45
+b    10
+c    27
+d     7
+dtype: int64
+
+
+=============================================================
+#-------------------------- Convertion Operation on series ----------------------
+# 1. Change dtype of series
+df = pd.DataFrame({
+    'Name':["Shera","Rahul","Jignesh","Yogesh","Pankaj","Mahesh"],
+    'Age':[23,24,24,23,24,np.NaN]
+})
+df
+
+output:
+Age	Name
+0	23.0	Shera
+1	24.0	Rahul
+2	24.0	Jignesh
+3	23.0	Yogesh
+4	24.0	Pankaj
+5	NaN	Mahesh
+
+----------------------------------------------
+dtypeBfr = df.dtypes
+print dtypeBfr
+
+output:
+Age     float64
+Name     object
+dtype: object
+
+-----------------------------------------------
+# use astype to convert dtypes
+# df["Age"]  = df["Age"].astype(int)
+# df["Name"] = df["Name"].astype(str)
+# print df
+# ValueError: Cannot convert non-finite values (NA or inf) to integer
+
+------------------------------------------------
+# dtype of NaN and inf can not be changed hence first need to remove that
+df.dropna(inplace=True)
+print df
+
+OUTPUT:
+    Age     Name
+0  23.0    Shera
+1  24.0    Rahul
+2  24.0  Jignesh
+3  23.0   Yogesh
+4  24.0   Pankaj
+
+--------------------------------------------------
+# use astype to convert dtypes
+df["Age"]  = df["Age"].astype(int)
+df["Name"] = df["Name"].astype(str)
+
+dtypeAft = df.dtypes
+print dtypeAft
+
+output:
+Age      int32
+Name    object
+dtype: object
+----------------------------------------------------
+
+# 2. convert series into list
+NameList = df["Name"].tolist()
+print (NameList, type(NameList))
+# NameList.dtypes is not applicable with list
+
+output:
+(['Shera', 'Rahul', 'Jignesh', 'Yogesh', 'Pankaj'], <type 'list'>)
+=============================================================
+
